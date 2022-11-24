@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -45,7 +45,15 @@ def login():
 
 @app.route('/register')    
 def register():
-    return render_template('auth/register.html')   
+    return render_template('auth/register.html')
+
+@app.route('/welcome')    
+def welcome():
+    email = request.args.get('mail')
+    password = request.args.get('Password')
+    access = {'email': email, 'password': password}
+
+    return render_template('admin/index.html', access_user=access)
 
 
 if __name__ == '__main__':
