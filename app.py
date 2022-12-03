@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request,redirect,url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, EmailField
+from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
@@ -42,10 +43,9 @@ def portfolio():
 ##########formularos flask_wtf############
 
 class LoginForm(FlaskForm):
-    username = StringField('Username')
-    username = EmailField('Username')
-    password = PasswordField('Password')
-    submit = SubmitField('Login')
+    
+    email = EmailField('Correo', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Ingresar')
 
 ##########Rutas###########
@@ -53,25 +53,34 @@ class LoginForm(FlaskForm):
 
 
 
-@app.route('/auth/login')    
+@app.route('/auth/login', methods=['GET', 'POST'])    
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        
+
+        return render_template('admin/index.html', email=email)
+   
     return render_template('auth/login.html', form=form)  
 
 
-@app.route('/register')    
+@app.route('/auth/register')    
 def register():
     return render_template('auth/login.html')
     form = LoginForm()
     return render_template('auth/login.html', form=form)
 
 @app.route('/welcome', methods=['GET', 'POST'])    
-def welcome():
-    email = request.form['mail']
-    password = request.form['Password']
-    access = {'email': email, 'password': password}
+def welcome(form):
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        
 
-    return render_template('admin/index.html', access_user=access)
+        return render_template('admin/index.html', email=email)
+    return redirect(url_for("login"))
 
 @app.errorhandler(404)
 def page_error_not_found(e):
