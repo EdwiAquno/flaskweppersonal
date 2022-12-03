@@ -24,7 +24,7 @@
         
         <button type="submit" class="btn btn-primary">Ingresar</button>
         {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url_for('register') }}" class="btn btn-secondary">Registrarse</a>
+        <a type="button" class="btn btn-secondary" href="{{ url_for('auth.login') }}">Login</a>
       </form>
 </div>
 

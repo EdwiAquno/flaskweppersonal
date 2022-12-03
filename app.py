@@ -1,61 +1,14 @@
 from flask import Flask, render_template, request,redirect,url_for
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, EmailField
-from wtforms import (StringField, PasswordField, 
-                    SubmitField, EmailField, 
-                    IntegerField, RadioField, 
-                    SelectField, TextAreaField)
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+
 
 from home.views import home_blueprint
+from auth.views import auth_blueprint
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
 
 
-
-##########formularos flask_wtf############
-
-class LoginForm(FlaskForm):
-    
-    email = EmailField('Correo', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Ingresar')
-
-class RegisterForm(FlaskForm):
-    name = StringField('Nombre')
-    last_name = StringField('Apellidos')
-    email = EmailField('Correo')
-    password = PasswordField('Contraseña')
-    phone = IntegerField('Teléfono')
-    is_married = RadioField('Estado Civil', choices=[('True', 'Casado'), ('False', 'Soltero')])
-    gender = SelectField('Genero', choices=[('male', 'Masculino'), ('female', 'Femenino'), ('other', 'Otro')])
-    submit = SubmitField('Registrar')    
-
-##########Rutas###########
-
-
-
-
-@app.route('/auth/login', methods=['GET', 'POST'])    
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
-        
-
-        return render_template('admin/index.html', email=email)
-   
-    return render_template('auth/login.html', form=form)  
-
-
-@app.route('/auth/register')    
-def register():
-    form = RegisterForm()
-
-    return render_template('auth/register.html', form=form)
 
 
 
@@ -66,6 +19,7 @@ def page_error_not_found(e):
 
 ################# Apps ##################
 app.register_blueprint(home_blueprint)
+app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
 
 if __name__ == '__main__':
